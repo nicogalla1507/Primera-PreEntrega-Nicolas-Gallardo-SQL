@@ -10,10 +10,6 @@ CREATE TABLE producto(
 );
 
 
-ALTER TABLE producto 				-- altero la tabla PRODUCTO para agregar una foreign key que se relaciona con la tabla fabricante(id_fabricante) para posteriormente poder relacionar los productos con su correspondiente fabricante mediante su id
-ADD CONSTRAINT fk_id_fabricante
-FOREIGN KEY (id_fabricante)
-REFERENCES fabricante(id_fabricante);
 
 
 
@@ -32,10 +28,7 @@ CREATE TABLE stock(
     fecha_movimiento DATE
 );
 
-ALTER TABLE stock 					-- agregue otra foreign key sobre la tabla STOCK para poder relacionar el ID_PRODUCTO de la tabla PRODUCTO. (Para posteriores consultas)
-ADD CONSTRAINT fk_id_producto
-FOREIGN KEY (id_producto)
-REFERENCES producto(id_producto);
+
 
 
 CREATE TABLE venta(
@@ -48,10 +41,7 @@ CREATE TABLE venta(
     fecha_registro DATE
 );
 
-ALTER TABLE venta     				-- otra FOREIGN KEY para poder relacionar el campo ID_PRODUCTO de la tabla VENTA y el campo ID_PRODUCTO de la tabla PRODUCTO. 
-ADD CONSTRAINT fk_id_cod_prod		
-FOREIGN KEY (id_producto)
-REFERENCES producto(id_producto);
+
 
 
 CREATE TABLE clientes(						-- tabla clientes para poder registrar los distintos clientes que compraron en COMPUTECNO
@@ -66,7 +56,24 @@ CREATE TABLE clientes(						-- tabla clientes para poder registrar los distintos
     fecha_registro DATE NOT NULL
 );
 
-ALTER TABLE venta		-- FOREIGN KEY sobre el campo ID_CLIENTE en la tabla venta que referencia al campo ID_CLIENTE de la tabla CLIENTES
-ADD CONSTRAINT fk_id_cliente
+ALTER TABLE producto ADD CONSTRAINT fk_id_fabricante
+FOREIGN KEY (id_fabricante)
+REFERENCES fabricante(id_fabricante)
+ON DELETE CASCADE;
+
+
+ALTER TABLE venta ADD CONSTRAINT fk_venta
 FOREIGN KEY (id_cliente)
-REFERENCES clientes(id_cliente);
+REFERENCES clientes(id_cliente)
+ON DELETE CASCADE;
+
+ALTER TABLE venta     				-- otra FOREIGN KEY para poder relacionar el campo ID_PRODUCTO de la tabla VENTA y el campo ID_PRODUCTO de la tabla PRODUCTO. 
+ADD CONSTRAINT fk_id_cod_prod		
+FOREIGN KEY (id_producto)
+REFERENCES producto(id_producto)
+ON DELETE CASCADE;
+
+ALTER TABLE stock ADD CONSTRAINT fk_cliente
+FOREIGN KEY (id_producto)
+REFERENCES producto (id_producto)
+ON DELETE CASCADE;
