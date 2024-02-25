@@ -1,4 +1,4 @@
-DELIMITER $$ 
+DELIMITER // 
 
 CREATE DEFINER=`root`@`localhost` FUNCTION `calcular_stock`(id_stock INT) RETURNS float
     DETERMINISTIC
@@ -16,8 +16,10 @@ BEGIN
         RETURN total_productos;
     END IF;
 END;
+//
+DELIMITER ;
 
-DELIMITER $$
+DELIMITER //
 CREATE DEFINER=`root`@`localhost` FUNCTION `calcular_ventas`(id_producto INT) RETURNS float
     DETERMINISTIC
 BEGIN
@@ -35,6 +37,6 @@ BEGIN
     -- Retornar total de ventas
     RETURN total;
 END;
-
-DELIMITER $$
+//
+DELIMITER ;
 
