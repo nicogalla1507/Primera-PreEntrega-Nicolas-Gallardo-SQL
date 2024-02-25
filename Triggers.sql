@@ -11,7 +11,7 @@ BEGIN
 
     -- Verificar si la nueva cantidad sería negativa
     IF nueva_cantidad < 0 THEN
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = '¡Alerta! No hay suficiente stock para realizar esta venta.'; -- si la cantidad es negativa, salta un mensaje
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = '¡Alerta! No hay suficiente stock para realizar esta venta.';
     ELSE
         -- Restar la cantidad vendida del stock
         UPDATE stock
@@ -19,13 +19,11 @@ BEGIN
         WHERE id_producto = NEW.id_producto;
     END IF;
 END;
+//
 
+DELIMITER ;
 
-DELIMITER $$
-
-
-DELIMITER $$
-
+DELIMITER //
 CREATE TRIGGER tg_producto_stock
 AFTER INSERT ON producto
 FOR EACH ROW 
@@ -35,6 +33,6 @@ BEGIN
     VALUES (NEW.id_producto, 0, CURRENT_TIMESTAMP);
 END;
 
-DELIMITER $$
+DELIMITER ;
     
     
