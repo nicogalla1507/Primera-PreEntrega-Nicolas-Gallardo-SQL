@@ -1,7 +1,7 @@
 -- creacion de stored procedures
 
 -- un stored procedure para registrar ventas
-DELIMITER $$
+DELIMITER //
 CREATE DEFINER=`root`@`localhost` PROCEDURE `agregar_venta`(
     IN p_id_producto INT,
     IN p_id_cliente INT,
@@ -18,34 +18,34 @@ BEGIN
     SET cantidad_en_stock = cantidad_en_stock - p_cantidad_vendida
     WHERE id_producto = p_id_producto;
 END;
-
-DELIMITER $$
+//
+DELIMITER ;
 
 -- otro para actualizar precios 
-
+DELIMITER //
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_actualizar_precios`(IN precio_producto FLOAT)
 BEGIN
 	UPDATE producto
     SET precio = precio * (1+ precio_producto/100);
 END;
-
-DELIMITER $$
+//
+DELIMITER ;
 
 -- Stored Procedure para bajar precios
-
+DELIMITER //
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_bajar_precios`(IN precio_porcentaje FLOAT)
 BEGIN
 	UPDATE producto
     SET precio = precio *(1-precio_porcentaje /100);
 END;
+//
+DELIMITER ;
 
 
 
 
-
-DELIMITER $$
 -- Otro para actualizar el stock pasando por parametro el id_producto, y la cantidad
-
+DELIMITER //
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_actualizar_stock`(IN p_id INT, IN p_cantidad INT)
 BEGIN
 	DECLARE stock_existente INT; 
@@ -67,21 +67,22 @@ BEGIN
         
 	END IF;
 END;
-
-DELIMITER $$
+//
+DELIMITER ;
 
 -- otro para registrar nuevos productos
-
+DELIMITER //
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_nuevo_producto`(IN nombre_producto VARCHAR(80), IN precio_producto FLOAT, IN id_fabricante_producto INT)
 BEGIN
 	INSERT INTO producto(nombre, precio, id_fabricante) VALUES
     (nombre_producto, precio_producto, id_fabricante_producto);
 END;
+//
 
-
-DELIMITER $$
+DELIMITER ;
 
 -- otro para registrar ventas y por cada venta baja la cantidad de producto que tengo en la tabla stock
+DELIMITER //
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_venta`(
     IN p_id_producto INT,
     IN p_id_cliente INT,
@@ -98,6 +99,8 @@ BEGIN
     SET cantidad_en_stock = cantidad_en_stock - p_cantidad_vendida
     WHERE id_producto = p_id_producto;
 END;
+//
+DELIMITER ;
 
 
 
