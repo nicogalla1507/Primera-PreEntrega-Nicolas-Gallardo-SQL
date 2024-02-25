@@ -1,8 +1,8 @@
 USE computecno;
 
 CREATE VIEW vista_venta_cliente AS
-SELECT v.cant, v.precio, v.total_venta, v.fecha_registro,
-       c.nombre AS NombreCliente, c.dir AS Direccion, c.cuit
+SELECT v.cant_vendida, v.precio, v.fecha_registro,
+       c.nombre AS NombreCliente, c.apellido, c.dir AS Direccion, c.cuit
 FROM venta v
 INNER JOIN clientes c ON v.id_cliente = c.id_cliente;
 
