@@ -6,17 +6,18 @@ CREATE TABLE producto(
 	id_producto INT PRIMARY KEY AUTO_INCREMENT NOT NULL, -- creo una primary key auto increment para que a medida que ingresen productos nuevos 
     nombre VARCHAR(80) NOT NULL,
     precio FLOAT NOT NULL,
-    id_fabricante INT
+    id_proveedor INT
 );
 
 
 
 
 
-CREATE TABLE fabricante(				-- una tabla fabricante para poder registrar los distintos fabricantes con los que computecno trabaja
-	id_fabricante INT PRIMARY KEY AUTO_INCREMENT NOT NULL,		
-    nombre_fabricante VARCHAR(80) NOT NULL,
-    localidad VARCHAR (80) NOT NULL
+CREATE TABLE proveedor(				-- una tabla proveedor para poder registrar los distintos proveedores con los que computecno trabaja
+	id_proveedor INT PRIMARY KEY AUTO_INCREMENT NOT NULL,		
+    nombre_proveedor VARCHAR(80) NOT NULL,
+    localidad VARCHAR (80) NOT NULL,
+    numero INT NOT NULL
 );
 
 CREATE TABLE stock(
@@ -53,9 +54,9 @@ CREATE TABLE clientes(						-- tabla clientes para poder registrar los distintos
     fecha_registro DATE NOT NULL
 );
 
-ALTER TABLE producto ADD CONSTRAINT fk_id_fabricante
-FOREIGN KEY (id_fabricante)
-REFERENCES fabricante(id_fabricante)
+ALTER TABLE producto ADD CONSTRAINT fk_id_proveedor
+FOREIGN KEY (id_proveedor)
+REFERENCES proveedor(id_proveedor)
 ON DELETE CASCADE;
 
 

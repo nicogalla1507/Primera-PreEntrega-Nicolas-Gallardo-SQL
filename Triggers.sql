@@ -32,7 +32,7 @@ BEGIN
     INSERT INTO stock (id_producto, cantidad_en_stock, fecha_actualizacion)
     VALUES (NEW.id_producto, 0, CURRENT_TIMESTAMP);
 END;
-
+//
 DELIMITER ;
     
     
