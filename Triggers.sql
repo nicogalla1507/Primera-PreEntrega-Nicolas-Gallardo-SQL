@@ -1,7 +1,7 @@
 DELIMITER //
 
 CREATE TRIGGER tg_venta_stock
-AFTER INSERT ON venta
+AFTER INSERT ON ventas
 FOR EACH ROW 
 BEGIN 
     DECLARE nueva_cantidad INT;
@@ -34,5 +34,39 @@ BEGIN
 END;
 //
 DELIMITER ;
+
+DELIMITER //
+
+CREATE TRIGGER tg_historial_precios
+AFTER INSERT ON producto
+FOR EACH ROW 
+BEGIN 
+    DECLARE precio_viejo FLOAT;
+    
+    -- Obtener el precio anterior del producto (si existe)
+    SELECT precio_nuevo INTO precio_viejo
+    FROM historial_precios
+    WHERE id_producto = NEW.id_producto
+    ORDER BY fecha_actualizacion DESC
+    LIMIT 1;
+
+    -- Si no hay precio anterior registrado, establecerlo como el precio actual
+    IF precio_viejo IS NULL THEN
+        SET precio_viejo = NEW.precio;
+    END IF;
+    
+    -- Insertar un nuevo registro en el historial de precios
+    INSERT INTO historial_precios (id_producto, fecha_actualizacion, precio_anterior, precio_nuevo)
+    VALUES (NEW.id_producto, NOW(), precio_viejo, NEW.precio);
+END//
+
+DELIMITER ;
+    
+
+
+
+
+
+
     
     

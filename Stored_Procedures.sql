@@ -10,7 +10,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `agregar_venta`(
 )
 BEGIN
     -- Insertar la nueva venta en la tabla con la fecha actual
-    INSERT INTO venta (id_producto, id_cliente, cant_vendida, precio, fecha_registro)
+    INSERT INTO ventas (id_producto, id_cliente, cant_vendida, precio, fecha_registro)
     VALUES (p_id_producto, p_id_cliente, p_cantidad_vendida, p_precio, NOW());
 
     -- Actualizar el stock después de la venta
@@ -23,21 +23,47 @@ DELIMITER ;
 
 -- otro para actualizar precios 
 DELIMITER //
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_actualizar_precios`(IN precio_producto FLOAT)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_actualizar_precios`(IN p_id_producto INT, IN p_porcentaje_cambio FLOAT)
 BEGIN
-	UPDATE producto
-    SET precio = precio * (1+ precio_producto/100);
-END;
+    DECLARE precio_viejo FLOAT;
+
+    -- Obtener el precio anterior del producto
+    SELECT precio INTO precio_viejo
+    FROM producto 
+    WHERE id_producto = p_id_producto;
+
+    -- Actualizar el precio del producto
+    UPDATE producto
+    SET precio = precio_viejo * (1 + p_porcentaje_cambio / 100)
+    WHERE id_producto = p_id_producto;
+
+    -- Insertar un registro en el historial de precios
+    INSERT INTO historial_precios (id_producto, fecha_actualizacion, precio_anterior, precio_nuevo)
+    VALUES (p_id_producto, NOW(), precio_viejo, precio_viejo * (1 + p_porcentaje_cambio / 100));
+END
 //
 DELIMITER ;
 
 -- Stored Procedure para bajar precios
 DELIMITER //
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_bajar_precios`(IN precio_porcentaje FLOAT)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_bajar_precios`(IN p_porcentaje_bajada FLOAT)
 BEGIN
-	UPDATE producto
-    SET precio = precio *(1-precio_porcentaje /100);
-END;
+    DECLARE precio_viejo FLOAT;
+
+    -- Obtener el precio anterior del producto
+    SELECT precio INTO precio_viejo
+    FROM producto 
+    WHERE id_producto = p_id_producto;
+
+    -- Actualizar el precio del producto
+    UPDATE producto
+    SET precio = precio_viejo * (1 - p_porcentaje_bajada / 100)
+    WHERE id_producto = p_id_producto;
+
+    -- Insertar un registro en el historial de precios
+    INSERT INTO historial_precios (id_producto, fecha_actualizacion, precio_anterior, precio_nuevo)
+    VALUES (p_id_producto, NOW(), precio_viejo, precio_viejo * (1 - p_porcentaje_bajada / 100));
+END
 //
 DELIMITER ;
 
@@ -91,7 +117,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_venta`(
 )
 BEGIN
     -- Insertar la nueva venta en la tabla con la fecha actual
-    INSERT INTO venta (id_producto, id_cliente, cant_vendida, precio, fecha_registro)
+    INSERT INTO ventas (id_producto, id_cliente, cant_vendida, precio, fecha_registro)
     VALUES (p_id_producto, p_id_cliente, p_cantidad_vendida, p_precio, CURRENT_TIMESTAMP);
 
     -- Actualizar el stock después de la venta

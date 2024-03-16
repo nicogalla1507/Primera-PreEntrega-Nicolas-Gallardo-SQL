@@ -1,10 +1,10 @@
 USE computecno;
 
-INSERT INTO fabricante(nombre_fabricante, localidad) VALUES
-('Gigabyte','Ramos Mejia'),
-('Asus','CABA');
+INSERT INTO proveedor(nombre_proveedor, localidad, numero) VALUES
+('SOMOS COMPUTACION','Ramos Mejia',1134357545),
+('Asus','CABA',1134398723);
 
-INSERT INTO producto(nombre,precio,id_fabricante) VALUES
+INSERT INTO producto(nombre,precio,id_proveedor) VALUES
 ('RTX 3060Ti', 641766,1),
 ('RTX 4070', 1500000, 2);
 
@@ -16,6 +16,6 @@ INSERT INTO clientes(id_cliente,nombre, apellido, email, dir,localidad, telefono
 -- llamo al procedure para actualizar el stock ya que despues de registrar producto nuevo. en la tabla stock (el campo cantidad_en_stock) se asigna por default en 0
 CALL sp_actualizar_stock(1,2);
 
-INSERT INTO venta (id_cliente,id_producto,cant_vendida,precio,fecha_registro) VALUES
+INSERT INTO ventas (id_cliente,id_producto,cant_vendida,precio,fecha_registro) VALUES
 (1,1,1,1400000,'2024-02-25');
 

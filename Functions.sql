@@ -31,7 +31,7 @@ BEGIN
     -- Calcular total de ventas del producto
     SELECT SUM(p.precio * v.cant_vendida) INTO total
     FROM producto p
-    JOIN venta v ON p.id_producto = v.id_producto
+    JOIN ventas v ON p.id_producto = v.id_producto
     WHERE p.id_producto = id_producto;
     
     -- Retornar total de ventas
