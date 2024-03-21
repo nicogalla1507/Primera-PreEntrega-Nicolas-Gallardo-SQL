@@ -10,9 +10,6 @@ CREATE TABLE producto(
 );
 
 
-
-
-
 CREATE TABLE proveedor(				-- una tabla proveedor para poder registrar los distintos proveedores con los que computecno trabaja
 	id_proveedor INT PRIMARY KEY AUTO_INCREMENT NOT NULL,		
     nombre_proveedor VARCHAR(80) NOT NULL,

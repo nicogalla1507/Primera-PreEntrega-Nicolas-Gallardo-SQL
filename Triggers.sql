@@ -62,10 +62,99 @@ END//
 
 DELIMITER ;
     
+DELIMITER //
+
+CREATE TRIGGER tg_ventas
+AFTER INSERT ON pedidos
+FOR EACH ROW 
+BEGIN
+    DECLARE precio_pedido FLOAT;
+
+    -- Obtener el precio del producto
+    SELECT precio INTO precio_pedido
+    FROM producto
+    WHERE id_producto = NEW.id_producto;
+
+    -- Multiplicar el precio del producto por la cantidad del pedido
+    SET precio_pedido = precio_pedido * NEW.cantidad_pedido;
+
+    -- Insertar en la tabla de ventas si el estado del pedido es 'f' (facturado)
+    IF NEW.estado_pedido = 'f' THEN
+        INSERT INTO ventas (id_cliente, id_pedido, id_producto, cant_vendida, precio, fecha_registro)
+        VALUES (NEW.id_cliente, NEW.id_pedido, NEW.id_producto, NEW.cantidad_pedido, precio_pedido, NOW());
+    END IF;
+END;
+//
+DELIMITER;
+
+DELIMITER //
 
 
+CREATE TRIGGER tg_compras
+AFTER INSERT ON compras
+FOR EACH ROW 
+BEGIN 
+	
+    DECLARE cantidad_comprada INT;
+    
+    SELECT cantidad_compra INTO cantidad_comprada
+    FROM compras
+    WHERE id_producto = NEW.id_producto
+    LIMIT 1;
+    
+    IF cantidad_comprada IS NOT NULL THEN
+		 
+		UPDATE stock
+		SET cantidad_en_stock = cantidad_en_stock + NEW.cantidad_compra
+		WHERE id_producto = NEW.id_producto;
+	END IF;
+END;
+//
+DELIMITER ;
 
 
+DELIMITER //
+
+
+CREATE TRIGGER tg_facturacion
+AFTER INSERT ON ventas
+FOR EACH ROW
+BEGIN 
+	
+    DECLARE verificacion CHAR;
+    DECLARE precio_final FLOAT;
+    
+    
+    SELECT estado_pedido INTO verificacion
+    FROM pedidos
+    WHERE id_producto = NEW.id_producto
+    LIMIT 1;
+    
+
+    
+    IF verificacion LIKE 'f' THEN
+		SET precio_final = NEW.precio * 0.9;
+	ELSE
+		SET precio_final = NEW.precio;
+	
+    END IF;
+	
+	INSERT INTO facturacion (id_pedido, id_cliente, id_producto, precio) VALUES
+	(NEW.id_pedido, NEW.id_cliente, NEW.id_producto, precio_final);
+    
+END;
+//
+DELIMITER ; 
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
 
 
     
